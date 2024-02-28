@@ -1,70 +1,71 @@
-# Getting Started with Create React App
+# 리액트를 이용한 프론트엔드 개발 실습 과제
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+과제 진행 기간 : 24.2.28 ~ 24.3.1
+개발 실습 과제를 진행하기에 앞서 요구사항을 분석하며 구현할 기능 목록을 정리한다.
 
-## Available Scripts
+## 구현 요구 사항
+세 개의 화면을 구현하고 각 화면에서 요구사항에 따라 기능을 구현한다.
+- 로그인 화면
+- 앨범 목록 화면
+- 상세(엘범 사진) 화면
 
-In the project directory, you can run:
+## 요구사항 정의
 
-### `npm start`
+### 공통 요구사항
+- API는 jsonplaceholder의 user, album, photo를 사용하고 useEffect와 axios를 정확히 사용하여야 한다. 
+(Clean-up함수 작성하여 네트워크 통신을 취소시킬 수 있어야한다.)
+- 로그인된 사용자는 useContext와 useReducer를 사용하여 작성한다. (로컬 스토리지에 저장하여 로그인 사용자를 지속시킨다.)
+- 페이지 전환은 react-router-dom 사용한다.
+- 간결하고 심플하게 코딩하여 가독성 좋은 코드를 작성한다.
+  
+### Layout
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+#### 주요 기능 정리
+- 각 화면에는 헤더를 가지고 있다.
+- 헤더의 타이틀은 왼쪽에 위치하고 "Hanaro Album"로 한다. 
+- 로그인 된 유저에 한해서 User ID와 UserName 을 오른쪽에 위치시키고 Sign Out 버튼을 위치시킨다.
+- 로그아웃 버튼을 누르면 로그인 상태를 초기화 시킨다.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 로그인 화면
+<img width="285" alt="image" src="https://github.com/iamcharles98/HanaroFrontEnd_2/assets/77047099/5f435780-ecb5-4ebc-8e33-f890a005ce58">  
 
-### `npm test`
+화면의 레이아웃은 그림과 같다.
+디자인보다는 기능 구현에 중점을 두고 과제를 수행한다. (디자인이 뛰어나다면 가산점이 있을 수 있다.)  
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### 주요 기능 정리
+- User ID 입력 기능
+- User Id 예외 검증 (1부터 10까지만 입력 가능), (검증 시점 : Sing In 버튼 클릭 시)
+- User Id 예외 발생 시 입력 안내문 출력한다.
+- axios 호출 기능 (로그인 버튼 유효성 검사 이후)
+- 로그인 컨텍스트를 로그아웃 버튼 누르기 전까지 유지하는 기능(로컬스토리지 활용)
+- 로그인 된 유저가 로그인 화면에 URL로 접근 시 강제로 앨범 목록 화면을 보여야한다.
+- 로그인 성공 시 앨범 목록화면으로 이동해야한다.
 
-### `npm run build`
+### 앨범 목록 화면
+<img width="313" alt="image" src="https://github.com/iamcharles98/HanaroFrontEnd_2/assets/77047099/5037a778-b565-43da-924f-a6a2dc664253">
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+앨범 목록 화면의 레이아웃은 그림과 같다.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+#### 주요 기능 정리
+- Mount 시 로그인 된 UserId를 Query Parameter로 가져온다. (axios 호출)
+- 각 앨범은 클릭가능하고 선택 시 Style을 부여하여 선택된 표시를 한다.
+- 앨범은 Id 오름차순으로 Id, Title 을 보여준다.
+- 앨범 상세보기 버튼을 누르면 다음과 같은 기능을 한다.
+  - 선택된 앨범이 없는 경우 -> 앨범을 선택하라는 Alert를 띄우고 return한다.
+  - 선택된 앨범이 있는 경우 -> 선택된 엘범의 상세 정보 페이지로 이동시킨다.
+- 앨범을 선택 후 새로고침하면 선택했을 당시의 상태를 유지해야 한다.
+- 상세 화면에서 목록으로 다시 돌아왔을 때, 이전과 동일하게 보여야 한다(history.back 사용 금지)
+- 로그인 되지않은 유저가 접근하면 로그인 화면으로 보낸다.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 상세 화면
+<img width="320" alt="image" src="https://github.com/iamcharles98/HanaroFrontEnd_2/assets/77047099/1d5b70ac-820f-42dd-b6e6-4cc2a0e7fbe4">
 
-### `npm run eject`
+상세 화면의 레이아웃은 그림과 같다.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+#### 주요 기능 정리
+- 선택된 앨범명을 제목으로 보여준다.
+- 선택된 앨범의 Id를 Query Parameter로 사진을 조회하고 해당 사진들의 thumbnail을 모두 보여준다.
+- 뒤로 버튼을 누르면 앨범 목록으로 이동한다.
+- 로그인 되지않은 유저가 접근하면 로그인 화면으로 보낸다.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
