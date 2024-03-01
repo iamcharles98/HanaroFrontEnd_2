@@ -1,11 +1,12 @@
 import { getData } from "./myAxios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { MyContext } from "./myContext";
 
 
 function AlbumList () {
-
+    const context = useContext(MyContext);
     const navigate = useNavigate();
     const location = useLocation();
     const [albums, setAlbums] = useState("");
@@ -30,26 +31,20 @@ function AlbumList () {
             console.log(e);
         }
     };
-
-    const hasLoginInfo= () => {
-        return localStorage.getItem("loginUser")!== null;
-    }
-
     useEffect( ()=> {
         const controller = new AbortController();
         if(location.state !== null) {
              setSeleted(location.state);
         }
-        if(!hasLoginInfo()) {
+        if(!context.current.isLogin) {
             navigate("/");
             return;   
         }
-        let userInfo = localStorage.getItem("loginUser");
-            getAlbum(JSON.parse(userInfo)[0].id);
+        getAlbum(context.current.id);
         return () => {
             controller.abort();
         }
-    },[])
+    },[context.current])
 
     const goPhotos = () => {
         if(selectedAlbum.id !== -1) {
@@ -77,7 +72,7 @@ function AlbumList () {
         <h2>앨범 목록</h2>
         <button onClick={goPhotos}>앨범 상세보기</button>
         </div>
-        <ul>
+        <ul className="list-group list-group-numbered">
             {
                 albums && albums.map((album) => {
                     return(

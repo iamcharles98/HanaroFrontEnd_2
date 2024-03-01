@@ -1,6 +1,7 @@
-import React, {useState, useContext} from "react";
+import React, {useState, useContext, useEffect} from "react";
 import { getData } from "./myAxios";
 import { useNavigate } from "react-router-dom";
+import { setUserContextToLocalStorage } from "./localStorageUtil";
 import { MyContext } from "./myContext";
 
 function Login() {
@@ -14,10 +15,12 @@ function Login() {
         setInput(enteredId)
     }
 
-    const submit = () => {
+    const submit = async () => {
         if(isValid(input)) {
-            signIn(input);
+            let user = await signIn(input);
             setFailed(false);
+            context.current={...user};
+            navigate("/albums");
             return;
         }
         setFailed(true);
@@ -29,13 +32,12 @@ function Login() {
             let userInfo = res.data.map(data => {
                 return {
                     id : data.id,
-                    name : data.name
+                    name : data.name,
+                    isLogin : true
                 };
             });
-            context.isLogin = true;
-            localStorage.clear();
-            localStorage.setItem("loginUser", JSON.stringify(userInfo));
-            navigate("/albums");
+            setUserContextToLocalStorage(userInfo);
+            return userInfo[0];
         } catch(e) {
             console.log(e);
         }
@@ -53,6 +55,12 @@ function Login() {
 
       return true;
     }
+
+    useEffect(() => {
+        if(context.current.isLogin) {
+            navigate("/albums");
+        }
+    },[context, navigate])
 
     return (
     <div>

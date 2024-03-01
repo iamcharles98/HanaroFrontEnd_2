@@ -9,10 +9,11 @@ function Layout() {
 
   const onSignOut = () => {
     localStorage.clear();
-    context.isLogin = false;
     alert("로그아웃 되었습니다.");
+    context.current={id:-1, name : "", isLogin : false};
     navigate("/");
   }
+
   return (
     <>
         <nav className="navbar navbar-expand-md navbar-dark bg-primary">
@@ -22,10 +23,10 @@ function Layout() {
 
                     <div className="navbar-nav me-auto mb-2 mb-md-0 ">
                       {
-                        context.isLogin ?
+                        context.current.isLogin ?
                         <>
-                        <span style={{"marginRight" : "8px", "alignContent" : "center"}}>3</span>
-                        <span>TEST</span>
+                        <span style={{"marginRight" : "8px", "alignContent" : "center"}}>{context.current.id}</span>
+                        <span>{context.current.name}</span>
                         </>
                         :null
                       }

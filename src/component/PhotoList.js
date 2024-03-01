@@ -3,12 +3,11 @@ import { useEffect, useContext, useState } from "react";
 import { MyContext } from "./myContext";
 import { getData } from "./myAxios";
 
-
 function PhotoList() {
     const navigate = useNavigate();
     const location = useLocation();
-    const context = useContext(MyContext);
     const [photos, setPhotos] = useState("");
+    const context = useContext(MyContext)
 
     const onBack = () => {
         navigate("/albums",{state:location.state});
@@ -34,20 +33,20 @@ function PhotoList() {
 
     useEffect(() => {
         const controller = new AbortController();
-        if(!context.isLogin) {
+        if(!context.current.isLogin) {
             navigate("/");
             return;
         }
-        
+
         getPhotos();
         return () => {
             controller.abort();
         }
-    },[])
+    },[context])
 
     return (
         <div>
-            <h3>{context.isLogin && location.state.title}</h3>
+            <h3>{context.current.isLogin && location.state.title}</h3>
             <div>
                 {
                     photos && photos.map((photo, key) => {
